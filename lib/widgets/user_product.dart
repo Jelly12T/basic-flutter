@@ -11,6 +11,7 @@ class UserProductItem extends StatelessWidget {
   UserProductItem(this.id, this.title, this.imageUrl);
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
     return Card(
       elevation: 10,
       child: ListTile(
@@ -38,9 +39,33 @@ class UserProductItem extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: () {
-                  Provider.of<Products>(context, listen: false)
-                      .deleteProduct(id!);
+                onPressed: () async {
+                  try {
+                    await Provider.of<Products>(context, listen: false)
+                        .deleteProduct(id!);
+                    scaffold.showSnackBar(
+                      SnackBar(
+                          content: Text(
+                        "Đã xóa sản phẩm thành công",
+                        style: TextStyle(
+                          color: Colors.greenAccent,
+                        ),
+                        textAlign: TextAlign.center,
+                      )),
+                    );
+                  } catch (error) {
+                    scaffold.showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Xóa sản phẩm thất bại',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
                 },
                 icon: Icon(
                   Icons.delete,

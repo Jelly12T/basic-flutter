@@ -19,6 +19,28 @@ class ProductOverViewScreen extends StatefulWidget {
 
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   var _showOnlyFavorites = false;
+  bool _inInit = true;
+  bool _isloaded = false;
+  @override
+  void didChangeDependencies() {
+    if (_inInit) {
+      setState(() {
+        _isloaded = true;
+      });
+      Provider.of<Products>(context).fetchAndSetProduct().then((value) {
+        setState(() {
+          _isloaded = false;
+        });
+      });
+    }
+    _inInit = false;
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+
+  Future<void> refershMain(BuildContext context) async {
+    await Provider.of<Products>(context, listen: false).fetchAndSetProduct();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +97,14 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(_showOnlyFavorites),
+      body: _isloaded
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: () => refershMain(context),
+              child: ProductsGrid(_showOnlyFavorites),
+            ),
     );
   }
 }
