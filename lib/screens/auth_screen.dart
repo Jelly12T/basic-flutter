@@ -5,7 +5,10 @@ import 'package:store_app/providers/auth.dart';
 import 'package:store_app/screens/product_overview_screen.dart';
 import '../models/http_exceptiot.dart';
 
-enum AuthMode { Signup, Login }
+enum AuthMode {
+  Signup,
+  Login,
+}
 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
@@ -24,7 +27,7 @@ class AuthScreen extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                   Color.fromRGBO(150, 173, 228, 1).withOpacity(0.5),
-                  Color.fromRGBO(0, 77, 139, 1).withOpacity(0.9),
+                  Color.fromRGBO(0, 77, 139, 1).withOpacity(0.7),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
