@@ -42,37 +42,7 @@ class CartScreen extends StatelessWidget {
                     ),
                     child: Card(
                       elevation: 10,
-                      child: FlatButton(
-                        onPressed: () {
-                          if (cart.itemCount == 0) {
-                            showDialog(
-                              context: context,
-                              builder: (ctx) => AlertDialog(
-                                title: Text(
-                                  "Chưa có sản phẩm nào!!",
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                ),
-                                content: Text(
-                                  "Vui lòng chọn thêm sản phẩm",
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                              ),
-                            );
-                          } else {
-                            Provider.of<Orders>(context, listen: false).addOder(
-                              cart.items.values.toList(),
-                              cart.totalAmount,
-                            );
-                            cart.clearn();
-                          }
-                        },
-                        child: Text(
-                          'ORDER NOW',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ),
+                      child: Orderbutton(cart: cart),
                       color: Theme.of(context).backgroundColor,
                     ),
                   ),
@@ -97,6 +67,68 @@ class CartScreen extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class Orderbutton extends StatefulWidget {
+  const Orderbutton({
+    Key? key,
+    required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  State<Orderbutton> createState() => _OrderbuttonState();
+}
+
+class _OrderbuttonState extends State<Orderbutton> {
+  var _isloading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      onPressed: () async {
+        if (widget.cart.totalAmount <= 0) {
+          null;
+        }
+        setState(() {
+          _isloading = !_isloading;
+        });
+        if (widget.cart.itemCount == 0) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text(
+                "Chưa có sản phẩm nào!!",
+                style: Theme.of(context).textTheme.subtitle2,
+              ),
+              content: Text(
+                "Vui lòng chọn thêm sản phẩm",
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            ),
+          );
+        } else {
+          await Provider.of<Orders>(context, listen: false).addOder(
+            widget.cart.items.values.toList(),
+            widget.cart.totalAmount,
+          );
+          setState(() {
+            _isloading = false;
+          });
+          widget.cart.clearn();
+        }
+      },
+      child: _isloading
+          ? CircularProgressIndicator()
+          : Text(
+              'ORDER NOW',
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
     );
   }
 }

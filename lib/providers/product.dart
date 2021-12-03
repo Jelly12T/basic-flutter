@@ -9,6 +9,7 @@ class Product with ChangeNotifier {
   final String? title;
   final String? description;
   final double? price;
+
   final String? imageUrl;
   bool? isFavorite;
   Product({
@@ -20,33 +21,22 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavoriteStatus(String id) async {
-    final url =
-        "https://first-project-b20b6-default-rtdb.firebaseio.com/products/$id.json";
-    final response = await http.get(Uri.parse(url));
-    final myProduct = json.decode(response.body) as Map<String, dynamic>;
-    if (myProduct['isFavorite'] == true) {
-      await http.patch(
-        Uri.parse(url),
-        body: json.encode(
-          {
-            'isFavorite': false,
-          },
-        ),
-      );
-      isFavorite = false;
-    } else {
-      await http.patch(
-        Uri.parse(url),
-        body: json.encode(
-          {
-            'isFavorite': true,
-          },
-        ),
-      );
-      isFavorite = true;
-    }
+  Future<void> toggleFavoriteStatus(String token, String userId) async {
+    isFavorite = !isFavorite!;
+    notifyListeners();
 
+    final url =
+        "https://first-project-b20b6-default-rtdb.firebaseio.com/userFavorites/$userId/$id.json?auth=$token";
+    final response = await http.get(Uri.parse(url));
+
+    await http.patch(
+      Uri.parse(url),
+      body: json.encode(
+        {
+          'isFavorite': isFavorite,
+        },
+      ),
+    );
     notifyListeners();
   }
 }

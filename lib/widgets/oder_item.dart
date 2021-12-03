@@ -23,6 +23,7 @@ class _OrderCardState extends State<OrderCard> {
           ListTile(
             title: Text(
               '\$${widget.order.amount}',
+              style: Theme.of(context).textTheme.subtitle2,
             ),
             subtitle: Text(
               DateFormat('dd MM yyyy hh:mm')
@@ -58,7 +59,7 @@ class _OrderCardState extends State<OrderCard> {
                               style: Theme.of(context).textTheme.bodyText2,
                             ),
                             Text(
-                              '${e.quantity}x \$${e.price}',
+                              '${e.quantity} x  ${e.price}',
                               style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ],
